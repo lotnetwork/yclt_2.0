@@ -678,6 +678,91 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
                     ),
                   ),
                 ),
+              // NEW BUTTON: Create Event - between Payment Method and Settings
+              if (FFAppState().isLogin == true)
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 0.0),
+                  child: InkWell(
+                    splashColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: () async {
+                      // Functionality will be added later
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                        boxShadow: const [
+                          BoxShadow(
+                            blurRadius: 27.0,
+                            color: Color(0x2690B6B8),
+                            offset: Offset(
+                              0.0,
+                              8.0,
+                            ),
+                          )
+                        ],
+                        borderRadius: BorderRadius.circular(22.0),
+                      ),
+                      child: Padding(
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(3.0, 3.0, 18.0, 3.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: 54.0,
+                              height: 54.0,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF1F5F5),
+                                borderRadius: BorderRadius.circular(22.0),
+                                shape: BoxShape.rectangle,
+                              ),
+                              alignment: const AlignmentDirectional(0.0, 0.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(0.0),
+                                child: SvgPicture.asset(
+                                  'assets/images/create_event.svg',
+                                  width: 24.0,
+                                  height: 24.0,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                'Create Event',
+                                maxLines: 1,
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
+                                      fontFamily: 'SF Pro Display',
+                                      fontSize: 16.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.normal,
+                                      useGoogleFonts: false,
+                                      lineHeight: 1.5,
+                                    ),
+                              ),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(0.0),
+                              child: SvgPicture.asset(
+                                'assets/images/arrow_right.svg',
+                                width: 24.0,
+                                height: 24.0,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ].divide(const SizedBox(width: 16.0)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 0.0),
                 child: InkWell(
