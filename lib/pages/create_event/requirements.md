@@ -13,9 +13,9 @@ Ensure real-time synchronization, security, and high performance.
 
 1. Entry Point
 Location
-The process begins from the User Profile Screen with a button labeled "Create Yard Closet Event".
+In the file: profile_componant_widget.dart (User Profile), there is a button labeled "Create Yard Closet Event". This is where the Create Event process starts. 
 Action
-When the button is tapped, the app navigates to the Create Event Screen.
+When this button is tapped, the app navigates to the Create Event Screen.
 
 2. Create Event Screen Functionality
 Required Fields
@@ -23,16 +23,12 @@ The following fields must appear on the screen in the following order:
 Gallery Images: Upload functionality for event cover and gallery images.
 Event Title: Text input field for the event title.
 Event Category: Multi-select dropdown populated with categories fetched from the database.
-Event Description:
-Brief Description: Short summary of the event.
-Full Description: Detailed event information.
-Event Duration: Dropdown (fetched from the database) with the following options:
+Event Description:  Short summary of the event.
+Event Duration: Dropdown (fetched from the database collection: duration) with the following options:
 1-day ($11.00)
 2-days ($19.00)
 3-days ($28.00)
-Price:
-Auto-populated based on the selected event duration.
-Displayed as a read-only field.
+Rate: The amount Auto-populated based on the selected event duration. (read-only)
 Schedule:
 Expandable sections for selecting up to 3 date/time combinations.
 Each section includes:
@@ -46,13 +42,14 @@ Read-only field populated on publishing using a geocoding service.
 Longitude:
 Read-only field populated on publishing using a geocoding service.
 Publish Button: Finalizes event creation.
-UI/UX Enhancements
+
+3. UI/UX Enhancements
 Inline validation for all fields.
 Expandable sections for schedule inputs to avoid clutter.
 Descriptive labels and placeholders for user guidance.
 Visual hierarchy with grouped fields and spacing.
 
-3. Validation
+4. Validation
 Before Publishing
 Mandatory Fields: Ensure all required fields are completed.
 Data Formatting:
@@ -61,7 +58,7 @@ Start times must precede end times.
 No overlapping schedules.
 Terms of Service: Ensure the user agrees to the disclaimer before enabling the "Publish" button.
 
-4. Publish and Payment Process
+5. Publish and Payment Process
 Step 1: Validation
 On tapping the "Publish" button:
 Validate all inputs.
@@ -70,7 +67,10 @@ Step 2: Navigation to Payment Screen
 Navigate to the existing Payment Method screen.
 Pass the following details:
 Event Name.
-Total Price (calculated based on event duration).
+Event Rate: is assigned the rate value from event_rate collection based on the duration selected,  no other calculations are applied.
+Payment Screen Integration:
+The payment screen should reuse the existing payment method.
+
 User-selected details for review.
 Step 3: Payment Options
 Utilize the existing payment process to:
@@ -78,7 +78,7 @@ Allow users to select a payment method and complete the transaction.
 Ensure proper integration with existing payment gateways (Stripe, RazorPay, PayPal).
 Step 4: Post-Payment Actions
 On Successful Payment:
-Save event data to MongoDB via an intermediary API.
+Save event data to MongoDB via api_calls.dart (you have already provided the code for).
 Update the event status to "Published."
 Notify the user of successful event publication.
 Redirect the user to the main app screen with a success message.
@@ -86,7 +86,8 @@ On Payment Failure:
 Display an error message.
 Allow the user to retry or return to the Create Event screen.
 
-5. Edit and Delete Functionality
+6. Edit and Delete Functionality
+The edit/delete functionalities should follow a similar flow/UI as the create event process
 Edit Event
 Users can edit their events after creation, provided:
 The event has not yet started.
@@ -97,31 +98,15 @@ Update the event data in MongoDB.
 Notify users of the successful update.
 Delete Event
 Users can delete their events after creation.
-Refund Handling:
+
+7. Refund Handling:
 Charge a $5.00 refund fee for event deletion.
-Reference the Terms of Service during this transaction.
+Reference the Terms of Service during this transaction regarding refund.
 Upon deletion:
 Update the event status to "Deleted."
 Notify the user of the successful deletion and refund.
 
-6. Backend Requirements
-API Endpoints
-POST /api/events:
-
-
-Save user-created event data to MongoDB.
-Validate inputs and sanitize data.
-Handle geocoding to populate latitude and longitude fields.
-PUT /api/events/{id}:
-
-
-Update existing event data based on user edits.
-Validate inputs and ensure the event has not yet started.
-DELETE /api/events/{id}:
-
-
-Mark the event as deleted and process the refund fee.
-Update event status in MongoDB.
+9. Backend Requirements
 Fail-Safe Mechanism
 If MongoDB write fails, temporarily store the data in Firebase.
 Use a background service to sync data from Firebase to MongoDB.
@@ -171,36 +156,6 @@ Real-time updates and notifications for users.
 Documentation for developers and QA teams.
 
 This document ensures the Create Event process is user-friendly, secure, and aligned with industry best practices. Let me know if additional details are needed!
-
-Additional questions you asked, answered:
-Integration Points:
-Should the "Create Yard Closet Event" button directly replace or extend any existing functionality in the User Profile screen, or will it be added as a completely new feature?
-Within the code folder (yardcloset.zip), in the file: profile_componant_widget.dart
-Located lib/pages/profile_flow/profile_componant/profile_componant_widget.dart
-Within the file starting about line 735, is where the  "Create Yard Closet Event" is defined
-Use the existing logic and this button to start your development of the Create Event process. 
-Is there a specific design guideline for the button (e.g., placement, color, style)?
-This button is already designed as the other buttons on this screen.
-Payment Screen Integration:
-Should the payment screen reuse an existing method? Yes use existing method.  Can you confirm whether any dynamic data (like event duration cost) is already being calculated, or should it be implemented from scratch? 
- The event duration cost is a flat fee and no other calculations are applied.
-Editing/Deleting Events:
-Are there existing components in the app for editing and deleting? If not, should these functionalities follow a similar flow/UI as the create event process?  
-Yes, these edit/delete functionalities follow a similar flow/UI as the create event process
-Backend APIs:
-Are the backend endpoints for creating, updating, and deleting events already implemented in the application, or is it expected that these will need to be developed alongside the front-end? Use a Dedicated Backend API 
-1. Backend APIs for Creating, Updating, and Deleting Events
-Current Situation:
-The app primarily uses Firebase Firestore, and there’s no indication of a MongoDB-specific backend API for handling event operations.
-Solution with Approach 1:
-A dedicated backend API can provide endpoints for creating, updating, and deleting events in MongoDB.
-The API serves as a single, centralized entry point for all database interactions. For example:
-POST /api/events: Create a new event.
-PUT /api/events/:id: Update an existing event.
-DELETE /api/events/:id: Delete an event.
-The Flutter app interacts with this API, ensuring that user-supplied data is written to MongoDB efficiently.
-By implementing this, you ensure that event management operations are fully supported in MongoDB without disrupting the current app logic.
-
 
 Database Synchronization:
 Can you confirm whether Firebase Realtime Database or WebSocket support is already configured in the app? If not, should it be included as part of the scope?
