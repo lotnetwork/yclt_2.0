@@ -38,9 +38,9 @@ Start Time
 End Time
 Venue Address: Text input for the event location.
 Latitude:
-Read-only field populated on publishing using a geocoding service.
+Read-only field populated on publishing using a geocoding service.  Latitude is populated from the geo service after the event has been published.
 Longitude:
-Read-only field populated on publishing using a geocoding service.
+Read-only field populated on publishing using a geocoding service.  Longitude is populated from the geo service after the event has been published.
 Publish Button: Finalizes event creation.
 
 3. UI/UX Enhancements
@@ -106,7 +106,7 @@ Upon deletion:
 Update the event status to "Deleted."
 Notify the user of the successful deletion and refund.
 
-9. Backend Requirements
+8. Backend Requirements
 Fail-Safe Mechanism
 If MongoDB write fails, temporarily store the data in Firebase.
 Use a background service to sync data from Firebase to MongoDB.
@@ -117,7 +117,7 @@ Notify users of successful event creation, updates, or deletions via:
 Push notifications (Firebase Cloud Messaging).
 In-app dialog or toast message.
 
-7. Security Considerations
+9. Security Considerations
 Input Sanitization:
 Remove malicious scripts or characters.
 Enforce field-specific validation (e.g., numeric checks for price).
@@ -129,7 +129,7 @@ Secure Payment Processing:
 Use HTTPS for communication with payment gateways.
 Validate payment status server-side before marking events as published, edited, or deleted.
 
-8. Post-Publishing Actions
+10. Post-Publishing Actions
 Event Visibility
 Ensure newly created, edited, or deleted events are immediately visible in the app.
 Navigation
@@ -137,7 +137,7 @@ Redirect users to:
 The main app screen or event details page on successful event creation, edit, or deletion.
 The Create Event screen on payment failure with pre-filled data.
 
-9. Development Best Practices
+11. Development Best Practices
 Code Modularity:
 Separate logic for frontend UI, backend API, and database interactions.
 Performance Optimization:
@@ -147,36 +147,16 @@ User Experience:
 Provide clear instructions and error messages.
 Ensure all interactions are intuitive and responsive.
 
-10. Deliverables
+12. Deliverables
 Fully functional Create Event screen integrated into the user profile.
 Payment process implementation utilizing the existing Payment Method screen.
 Edit and delete functionality for user-created events.
 Backend API for event creation, updates, deletions, and synchronization.
 Real-time updates and notifications for users.
-Documentation for developers and QA teams.
+Documentation for developers and QA teams.Ron 
 
 This document ensures the Create Event process is user-friendly, secure, and aligned with industry best practices. Let me know if additional details are needed!
 
-Database Synchronization:
-Can you confirm whether Firebase Realtime Database or WebSocket support is already configured in the app? If not, should it be included as part of the scope?
 
-2. Database Synchronization with Firebase/WebSocket
-Current Situation:
-Firebase Firestore is already used for data retrieval and real-time synchronization.
-MongoDB integration for data writing could introduce complexity if handled directly in the app.
-Solution with Approach 1:
-The backend API can:
-Write data to MongoDB.
-Optionally update Firebase Firestore for real-time sync (if Firestore continues to be used for display purposes).
-Example Flow:
-The Flutter app sends event data to the API.
-The API writes the data to MongoDB.
-(Optional) The API updates Firestore for real-time updates visible in the app.
-This approach ensures synchronization between MongoDB and Firebase without requiring WebSocket support or duplicating logic in the app.
-
-
-Geocoding Service:
-Are there any preferred geocoding APIs or services for populating latitude and longitude, or should this integration be decided during development?
-MapBox will be used for Geocoding, during development provide a placeholder for dummy API key the will be swapped for an active key during testing.
 
 Are the instructions and requirements clear and concise to proceed?
