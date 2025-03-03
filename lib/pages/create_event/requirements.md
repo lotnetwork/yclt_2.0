@@ -160,8 +160,8 @@ Additional Questions/Answers:
 ### Image/Media Handling:
 
 What are the exact specifications for image uploads (file size limits, allowed formats)?
-Is there a maximum number of gallery images that can be uploaded?
-How should images be validated before uploading?
+Is there a maximum number of gallery images that can be uploaded? Yes, 6.
+For your specified maximum of 6 gallery images, you should implement a UI that clearly indicates this limit and prevents additional uploads once reached. You might also want to consider implementing a feature that allows users to reorder the images, with the first image automatically set as the featured/cover image for the event.
 
 For image and media handling in event management applications, the following industry standards are typically followed:
 
@@ -197,7 +197,7 @@ For image and media handling in event management applications, the following ind
    - Show upload progress for larger files
    - Allow preview and cropping before final submission
 
-For your specified maximum of 6 gallery images, you should implement a UI that clearly indicates this limit and prevents additional uploads once reached. You might also want to consider implementing a feature that allows users to reorder the images, with the first image automatically set as the featured/cover image for the event.
+
 
 
 ## Date and Time Handling:
@@ -737,10 +737,38 @@ Yes, absolutely. Let's outline specific test cases and performance benchmarks fo
 6.  **API Response Times:**
     * **Benchmark 6.1:** API response times for draft saving, scheduling, and publishing should be consistently below Y milliseconds (where Y is a number based on your performance requirements).
 
-**Important Notes:**
+**Schedule Implementation: 
+The requirements mention "expandable sections for selecting up to 3 date/time combinations," but the provided event structure shows dates as an array that could potentially contain more entries. Clarification on whether 3 is a hard limit would be helpful.
+ - 3 is a hard limit for now, with the potential of the date/time combinations to increase reason event structure shows dates as an array.
 
-* These test cases and benchmarks should be adapted to your specific application requirements and infrastructure.
-* Performance testing should be conducted under realistic load conditions.
-* Use appropriate testing tools and frameworks to automate and execute these tests.
-* Stress test the application to ensure that it can handle peak traffic.
+** Payment Integration: 
+While the document mentions reusing the existing payment screen, more specifics about how the payment confirmation should update the event status would be beneficial. 
+- After a successful payment:
+- - ** if the user chooses to schedule the event to be posted and notifications to go out later the status is 'Scheduled' and is_completed field is set to 'On Hold'
+- - ** if the user chooses to publish the event and notifications to go out soon after the status is 'Published' and is_completed field is set to: 'Upcoming'
+    * Implement and manage the following event statuses:
+        * "Scheduled"
+        * "Published"
+    * Display the current event status prominently on the event editing and viewing pages.  
 
+
+***Database Integration: 
+There's mention of MongoDB and Firebase for data storage, but concrete details about API endpoints for event creation (vs. the existing endpoints for event retrieval) would be useful for implementation.
+The API calls in api_calls.dart are client-side interfaces that communicate with your backend server endpoints. When these calls are made:
+
+CreateEventApiCall:
+
+Sends a POST request to '/createevent' with event data
+The backend endpoint receives this data and creates a new document in the events collection in MongoDB
+
+
+UpdateEventApiCall:
+
+Sends a POST request to '/updateevent' with updated event data
+The backend identifies the document by eventId and updates the corresponding fields
+
+
+DeleteEventApiCall:
+
+Sends a POST request to '/deleteevent' with the eventId
+The backend uses this ID to find and remove the document from MongoDB
