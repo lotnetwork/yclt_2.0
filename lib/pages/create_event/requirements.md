@@ -282,50 +282,465 @@ By explicitly including the "remove" control requirement, we ensure that this es
 These requirements ensure a comprehensive and user-friendly event creation process that handles diverse date and time scheduling needs.
 
 
-Payment Processing:
+**Payment Processing:
 
-Is there a specific payment gateway or provider integration required?
-What is the payment flow for event creation? Is there a fixed fee or variable pricing model?
+The payment process already in the app will be used for payment processing.  Refer to: payment_page_widget.dart for the payment flow process.
+What is the payment flow for event creation? The cost for the event is based on the duration selected by the user.
 How are refunds handled if an event is canceled or modified?
+If the event is to start within 24 hours and the user chooses to cancel, the charge is $4, and the user is refunded the difference. 
 
 
 User Permissions:
 
-What validation is needed to ensure only authorized users can create events?
-Are there any role-based permissions for event creation?
+What validation is needed to ensure only authorized users can create events?  The create event process is part of the users profile.  The user would have to 
+create an account in order to create an event.
+Are there any role-based permissions for event creation?  Only that they are a registered user.
 
 
 Field Validation:
 
-Are there specific formatting requirements for fields like address, description, etc.?
+Are there specific formatting requirements for fields like address, description, etc.?  Address is to be:  Street Address, City, State, Zip.
+Address autocomplete is to be used.  MapBox is the geo service for this.
 What HTML tags are permitted in the description field?
+Commonly Permitted HTML Tags (and Why):
+
+p (Paragraph):
+For basic text formatting.
+br (Line Break):
+To create line breaks within text.   
+strong (Bold):
+To emphasize text.   
+em (Italics):
+To italicize text.
+ul and li (Unordered List):
+To create bulleted lists.   
+  
+ol and li (Ordered List):
+To create numbered lists.   
+  
+a (Link):
+To create hyperlinks (with appropriate security measures like rel="noopener noreferrer").
+h1, h2, h3, etc. (Headings):
+To create headings of various sizes.
+  
+span:
+to allow inline styling.
+Tags Typically Restricted (and Why):
+
+script:
+To prevent XSS attacks.
+iframe:
+To prevent embedding external content that could be malicious.
+style:
+To prevent users from overriding the application's CSS.
+img:
+May be allowed, but needs careful handling of src attributes to prevent security issues.
+Any tag that could change the layout in unpredictable ways.
 
 
-Location Services:
+\*\*Location Services:
 
-How is the event location captured? Is there a map integration or address lookup?
-Is geolocation required for events?
+\*\*Mapping Integration:
+
+\*\*\*Mapbox Geocoding:
+
+Address Resolution: Mapbox's Geocoding API is used to convert user-entered addresses into geographic coordinates (latitude and longitude).
+
+Address Suggestions: As the user types, Mapbox provides real-time address suggestions, improving accuracy and speed.
+
+Reverse Geocoding: if a user moves a marker on the google map, Mapbox's reverse geocoding is used to change the lat/long back into an address.
+
+\*\*\*Google Maps Display:
+
+Map Visualization: Google Maps is used to display the event location on an interactive map within the event creation and viewing interfaces.
+
+Marker Placement: Once an address is resolved by Mapbox, a marker is placed on the Google Map at the corresponding coordinates.
+
+Map Interaction: Users can pan, zoom, and interact with the Google Map to visually confirm the event location.
+
+Marker Movement: users can move the marker to a new location.
+
+Map Display in Event Listings: When users browse event listings, Google Maps is used to display event locations on a map, allowing users to visualize event proximity.
+
+\*\*\*Integration Workflow:
+
+Address Input: The user enters an address in the address field.
+
+Mapbox Geocoding: Mapbox's Geocoding API resolves the address to latitude and longitude.
+
+Google Maps Display: The latitude and longitude coordinates are used to place a marker on the Google Map.
+
+User Confirmation/Adjustment: The user visually confirms the location and can adjust the marker if needed.
+
+Reverse Geocoding (if needed): if the user moves the marker, Mapbox's reverse geocoding is used to update the address field.
+
+Data Storage: The latitude and longitude coordinates are stored in the event database.
+
+Event Display: When the event is displayed, the stored coordinates are used to place a marker on the Google Map.
+
+\*\*\*Key Considerations:
+
+API Keys: Securely manage and store Mapbox and Google Maps API keys.
+
+Error Handling: Implement robust error handling for API requests and map display.
+
+Performance: Optimize map loading and rendering for a smooth user experience.
+
+Mobile Optimization: Ensure that the map interface is responsive and usable on mobile devices.
+
+User Experience: Make sure that the map and address input work together in a way that is easy for the user to understand.
 
 
 Backend Integration:
 
 What specific API endpoints will be needed for event creation and management?
+
+Key API endpoints found:
+
+eventDetailsApiCall - Gets details for a specific event
+
+searchEventApiCall - Searches for events
+
+bookTicketApiCall - Books tickets for events
+
+getFavoriteEventAllApiCall - Gets user's favorite events
+
+allCategoryApiCall - Gets all event categories
+
+organizerApiCall - Gets event organizers
+
+sponserApiCall - Gets event sponsors
+
+UpdateEventApiCall - To edit existing events
+
+DeleteEventApiCall - To delete events
+
 What is the expected data structure for the request/response?
+
+Data Structure:
+
+{
+
+"avatar": "concert\_avatar.jpg",
+
+"event": "Summer Music Festival",
+
+"categoryId": \["music", "festival"\],
+
+"organizerId": \["music-org-1"\],
+
+"sponsorId": \["sponsor-a"\],
+
+"dates": \[
+
+{
+
+"date": "2024-07-12",
+
+"startTime": "18:00",
+
+"endTime": "23:00"
+
+},
+
+{
+
+"date": "2024-07-13",
+
+"startTime": "16:00",
+
+"endTime": "22:00"
+
+},
+
+{
+
+"date": "2024-07-14",
+
+"startTime": "14:00",
+
+"endTime": "20:00"
+
+}
+
+\],
+
+"tax": 7,
+
+"galleryImg": \["image1.jpg", "image2.png"\],
+
+"photo\_link": "https://example.com/festival",
+
+"address": "Central Park, New York",
+
+"location": { "lat": 40.7128, "lng": -74.0060 },
+
+"tagId": \["live", "outdoor"\],
+
+"lastdate": "2024-07-14",
+
+"totalSeat": 1000,
+
+"totalBookedTicket": 850,
+
+"availableticket": 150,
+
+"briefdescription": "A weekend of live music!",
+
+"disclaimer": "
+
+No outside food or drinks.
+
+",
+
+"description": "
+
+Enjoy performances from top artists.
+
+",
+
+"status": "Publish",
+
+"is\_completed": "Upcoming",
+
+"createdAt": "2024-06-10T10:00:00Z",
+
+"updatedAt": "2024-07-10T12:00:00Z",
+
+"\_\_v": 0,
+
+"rate": 150,
+
+"duration": "3",
+
+"dateSelectionType": "consecutive"
+
+}
 
 
 Error Handling:
 
-How should errors from the backend be presented to users?
-Are there specific recovery flows if event creation fails?
+### Error Presentation to Users
+
+1.  **Toast Messages for Non-Critical Errors**:
+    
+    *   Brief, non-intrusive notifications for minor errors
+        
+    *   Example: "Failed to load categories. Please try again."
+        
+    *   Implementation is already available via the actions.showCustomToastBottom() method
+        
+2.  **Alert Dialogs for Critical Errors**:
+    
+    *   Modal dialogs for errors requiring user acknowledgment
+        
+    *   Should include error details and suggested actions
+        
+    *   Example: When event creation fails due to validation errors
+        
+3.  **Inline Form Validation**:
+    
+    *   Display errors directly beneath affected form fields
+        
+    *   Real-time feedback as users input data
+        
+4.  **Error States in UI Components**:
+    
+    *   Visual indicators (red borders, warning icons)
+        
+    *   Loading states that transition to error states
+        
+
+### Recovery Flows for Failed Event Creation
+
+1.  **Data Preservation**:
+    
+    *   Store form data in state when submission fails
+        
+    *   Allow users to retry without re-entering information
+        
+    *   Consider implementing auto-save to local storage for long forms
+        
+2.  **Partial Submission**:
+    
+    *   Handle scenarios where image uploads succeed but data submission fails
+        
+    *   Track uploaded assets and avoid re-uploading on retry
+        
+3.  **Guided Error Resolution**:
+    
+    *   Highlight specific fields causing validation errors
+        
+    *   Provide clear guidance on how to fix each issue
+        
+    *   Auto-scroll to problematic fields
+        
+4.  **Offline Support**:
+    
+    *   Detect connectivity issues and inform users
+        
+    *   Queue operations for when connectivity is restored
+        
+    *   Show appropriate offline indicators
 
 
 Drafts and Publishing:
 
-Is there a draft mode for events before they're published?
-Can events be scheduled for future publishing?
+## Event Drafts and Scheduled Publishing - Developer Requirements
+
+**Objective:** Implement a system for event drafts and scheduled publishing, enabling event organizers to manage event creation and publishing effectively.
+
+**Functional Requirements:**
+
+1.  **Draft Mode:**
+    * Implement a "Draft" status for events.
+    * Provide a "Save as Draft" button during event creation and editing.
+    * Saving as a draft shall store the event data without making it publicly accessible.
+    * Create a dedicated section or page for managing drafts.
+    * Display a list of drafts, including event name, creation date, and last edited date.
+    * Provide options to edit, preview, and delete drafts from the drafts list.
+
+2.  **Scheduled Publishing:**
+    * Allow event organizers to schedule events for future publishing.
+    * Provide a "Publish" button during event editing.
+    * When the "Publish" button is clicked, provide the following options:
+        * "Publish Now"
+        * "Schedule Publish"
+    * If "Schedule Publish" is selected:
+        * Display a date and time picker for scheduling the publishing date and time.
+        * Store the scheduled publishing date and time in the event data.
+        * Implement a background process or scheduled task to automatically publish events at the scheduled time.
+        * Display a confirmation message with the scheduled publishing date and time.
+        * Provide options to edit or cancel the scheduled publishing.
+
+3.  **Event Status:**
+    * Implement and manage the following event statuses:
+        * "Draft"
+        * "Scheduled"
+        * "Published"
+    * Display the current event status prominently on the event editing and viewing pages.
+
+4.  **Event Editing:**
+    * Allow editing of events in "Draft," "Scheduled," and "Published" statuses.
+    * When editing a "Published" event, display a clear warning that changes will be visible to users.
+    * Consider implementing a version history or audit trail to track changes to published events.
+
+5.  **Preview Functionality:**
+    * Provide a "Preview" option for drafts and scheduled events.
+    * The preview shall display the event as it will appear when published.
+
+6.  **Notifications:**
+    * Display a confirmation message when an event is published or scheduled.
+    * Implement email or in-app notifications to confirm publishing or scheduled publishing.
+    * Send notifications when scheduled publishing occurs.
+
+**User Interface (UI) Requirements:**
+
+1.  **Clear Status Indicators:**
+    * Use visual cues (e.g., labels, icons, color coding) to indicate event status.
+
+2.  **Intuitive Publishing Options:**
+    * Provide clear and easy-to-use publishing options.
+
+3.  **Scheduled Publishing Interface:**
+    * Design a user-friendly interface for scheduling publishing dates and times.
+
+4.  **Drafts Management Interface:**
+    * Create a clean and organized interface for managing drafts.
+
+5.  **Confirmation Messages:**
+    * Display clear and informative confirmation messages.
+
+**Technical Requirements:**
+
+1.  **Data Storage:**
+    * Store the event status and scheduled publishing date/time in the event database.
+
+2.  **Background Processing/Scheduled Tasks:**
+    * Implement a reliable background process or scheduled task for automated scheduled publishing.
+
+3.  **Notification System:**
+    * Integrate with an email or in-app notification system.
+
+4.  **Security:**
+    * Ensure that drafts and scheduled events are not publicly accessible until published.
+
+5.  **Error Handling:**
+    * Implement robust error handling for publishing and scheduling operations.
+
+6.  **Performance:**
+    * Optimize background processes and database queries for efficient performance.
+
 
 
 Testing Requirements:
 
-Are there specific test cases or scenarios that need to be addressed?
-What are the expected performance benchmarks?
+Yes, absolutely. Let's outline specific test cases and performance benchmarks for the drafts and scheduled publishing feature.
+
+**Test Cases and Scenarios:**
+
+1.  **Draft Creation and Management:**
+    * **TC 1.1:** Create a new event and save it as a draft. Verify that the event status is "Draft."
+    * **TC 1.2:** Edit a draft event and save the changes. Verify that the changes are saved and the status remains "Draft."
+    * **TC 1.3:** Preview a draft event. Verify that the preview displays the event accurately.
+    * **TC 1.4:** Delete a draft event. Verify that the event is removed from the drafts list.
+    * **TC 1.5:** Create multiple drafts. Verify that they are all listed correctly.
+    * **TC 1.6:** Verify that drafts are not publicly accessible.
+
+2.  **Scheduled Publishing:**
+    * **TC 2.1:** Schedule an event for future publishing. Verify that the event status is "Scheduled" and the scheduled date/time is stored correctly.
+    * **TC 2.2:** Edit a scheduled event. Verify that the changes are saved and the scheduled date/time remains unchanged.
+    * **TC 2.3:** Edit the scheduled date/time. Verify that the new date/time is stored.
+    * **TC 2.4:** Cancel a scheduled publishing. Verify that the event is not published and the status reverts to "Draft."
+    * **TC 2.5:** Verify that the event is automatically published at the scheduled time.
+    * **TC 2.6:** Verify that scheduled events are not publicly accessible before the scheduled time.
+    * **TC 2.7:** Schedule an event for a time within the next minute. Verify that it publishes.
+    * **TC 2.8:** Schedule an event for a time in the past. Verify that the system provides an error.
+
+3.  **Publishing:**
+    * **TC 3.1:** Publish an event immediately. Verify that the event status is "Published" and it is publicly accessible.
+    * **TC 3.2:** Edit a published event. Verify that the changes are visible to users.
+    * **TC 3.3:** Verify the warning message when editing a published event.
+
+4.  **Notifications:**
+    * **TC 4.1:** Verify that a confirmation message is displayed when an event is published.
+    * **TC 4.2:** Verify that an email or in-app notification is sent when an event is published.
+    * **TC 4.3:** Verify that a confirmation message is displayed when an event is scheduled.
+    * **TC 4.4:** Verify that an email or in-app notification is sent when an event is scheduled.
+    * **TC 4.5:** Verify that an email or in-app notification is sent when the scheduled publishing occurs.
+
+5.  **Error Handling:**
+    * **TC 5.1:** Attempt to schedule an event with invalid date/time values. Verify that an error message is displayed.
+    * **TC 5.2:** Verify that the system handles network errors or API failures gracefully.
+
+6.  **Concurrency:**
+    * **TC 6.1:** Simulate multiple users creating and publishing events simultaneously. Verify that the system handles concurrency correctly.
+
+**Expected Performance Benchmarks:**
+
+1.  **Draft Saving:**
+    * **Benchmark 1.1:** Draft saving should complete within 1-2 seconds.
+
+2.  **Scheduled Publishing:**
+    * **Benchmark 2.1:** Scheduled publishing should occur within 1 minute of the scheduled time.
+    * **Benchmark 2.2:** The background process or scheduled task should not impact the performance of other application features.
+
+3.  **Publishing:**
+    * **Benchmark 3.1:** Publishing an event should complete within 1-2 seconds.
+
+4.  **Notification Delivery:**
+    * **Benchmark 4.1:** Email or in-app notifications should be delivered within 1-2 minutes.
+
+5.  **Concurrency:**
+    * **Benchmark 5.1:** The system should be able to handle at least X concurrent users creating and publishing events without significant performance degradation (where X is a number based on your expected traffic).
+
+6.  **API Response Times:**
+    * **Benchmark 6.1:** API response times for draft saving, scheduling, and publishing should be consistently below Y milliseconds (where Y is a number based on your performance requirements).
+
+**Important Notes:**
+
+* These test cases and benchmarks should be adapted to your specific application requirements and infrastructure.
+* Performance testing should be conducted under realistic load conditions.
+* Use appropriate testing tools and frameworks to automate and execute these tests.
+* Stress test the application to ensure that it can handle peak traffic.
+
