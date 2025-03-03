@@ -156,7 +156,176 @@ Real-time updates and notifications for users.
 Documentation for developers and QA teams.Ron 
 
 This document ensures the Create Event process is user-friendly, secure, and aligned with industry best practices. Let me know if additional details are needed!
+Additional Questions/Answers:
+### Image/Media Handling:
+
+What are the exact specifications for image uploads (file size limits, allowed formats)?
+Is there a maximum number of gallery images that can be uploaded?
+How should images be validated before uploading?
+
+For image and media handling in event management applications, the following industry standards are typically followed:
+
+### Image Upload Specifications (Industry Standards)
+1. **File Size Limits**:
+   - Maximum file size of 5-10 MB per image
+   - Optimal size of 1-5 MB for balance between quality and performance
+
+2. **Allowed Formats**:
+   - Common formats: JPEG, PNG, GIF, WebP
+   - JPEG and PNG are most commonly supported
+   - WebP is becoming more standard for web applications due to better compression
+
+### Image Validation Best Practices
+1. **Client-side Validation**:
+   - Validate file type by checking MIME type, not just file extension
+   - Check image dimensions to ensure minimum quality (e.g., at least 800x600 pixels)
+   - Implement file size validation before upload begins
+
+2. **Server-side Validation**:
+   - Re-validate file type and size on the server
+   - Scan for malicious content
+   - Strip EXIF data for privacy (unless location data is needed)
+   - Generate appropriate thumbnails for different display contexts
+
+3. **Image Processing**:
+   - Compress images to optimize storage and loading time
+   - Resize images to standard dimensions that work well with your UI
+   - Create multiple resolutions for responsive design
+
+4. **User Experience**:
+   - Provide clear feedback on acceptable formats and sizes
+   - Show upload progress for larger files
+   - Allow preview and cropping before final submission
+
+For your specified maximum of 6 gallery images, you should implement a UI that clearly indicates this limit and prevents additional uploads once reached. You might also want to consider implementing a feature that allows users to reorder the images, with the first image automatically set as the featured/cover image for the event.
 
 
+## Date and Time Handling:
 
-Are the instructions and requirements clear and concise to proceed?
+The requirements mention multi-day events with different time slots - is there a maximum number of date/time combinations allowed?
+What timezone handling is required for events? Do we need to store/display timezone information?
+### Date and Time Handling
+## Event Creation: Date and Time Selection Requirements
+
+**Objective:** To provide users with a flexible and intuitive method for selecting event dates and times, accommodating both consecutive and separate date selections with varying start and end times for each date.
+
+**Requirements:**
+
+**1. Date Selection Modes:**
+
+* **Consecutive Dates (Default):**
+    * Users shall be able to select a range of consecutive dates using a standard date range picker.
+    * The date range picker shall be the default selection method.
+    * The user shall be able to switch to separate date selection mode.
+* **Separate Dates:**
+    * Users shall be able to select individual, non-consecutive dates from a calendar view.
+    * The selected dates shall be visually highlighted on the calendar.
+    * A list of selected dates shall be displayed below the calendar.
+    * The user shall be able to switch back to consecutive date selection mode.
+
+**2. Time Selection:**
+
+* **Start and End Times:**
+    * Users shall be able to specify a start and end time for each selected date.
+    * Time selection shall be performed using appropriate time picker components.
+    * Time input fields shall be clearly labeled (e.g., "Start Time," "End Time").
+* **Consecutive Dates Time Input:**
+    * After a consecutive date range is selected, the application shall display start and end time input fields for each date within the range.
+    * The first day and last day time selections should be the first displayed.
+* **Separate Dates Time Input:**
+    * When a user selects a date from the calendar in separate date selection mode, the application shall immediately display start and end time input fields below the calendar.
+    * The selected dates list shall display the date along with the corresponding start and end times.
+* **Time Format:**
+    * The application shall respect the user's preferred time format (12-hour or 24-hour).
+
+**3. User Interface (UI) Requirements:**
+
+* **Clear Visual Feedback:**
+    * Selected dates shall be visually highlighted on the calendar.
+    * The list of selected dates shall be clearly displayed.
+    * The total cost shall be dynamically updated as dates and times are selected.
+* **Intuitive Layout:**
+    * The date and time selection interface shall be intuitive and easy to use.
+    * Time input fields shall be placed logically in relation to the corresponding dates.
+    * Visual cues (e.g., borders, spacing) shall be used to group related elements.
+* **Mobile Responsiveness:**
+    * The date and time selection interface shall be responsive and usable on mobile devices.
+* **Error Handling:**
+    * The application shall provide clear error messages if the user enters invalid time values (e.g., end time before start time).
+    * The application should validate that at least one date is selected.
+* **Remove Selected Date-Time Entry:**
+    * In "Separate Dates" selection mode, each selected date-time entry in the list of dates shall have a clearly visible "remove" control (e.g., an "[X]" button or a "delete" icon) beside it.
+    * When the remove control is activated, the corresponding date-time entry shall be immediately removed from the list, and the total cost shall be recalculated.
+
+**Why this is important:**
+
+* **User Control:** It empowers users to easily correct mistakes or change their selections.
+* **Efficiency:** It avoids the need to clear all selections and start over.
+* **User Experience:** It contributes to a more polished and user-friendly interface.
+
+By explicitly including the "remove" control requirement, we ensure that this essential functionality is implemented.
+
+
+**4. Data Storage:**
+
+* **Data Structure:**
+    * The event data shall be stored in a structured format (e.g., JSON) that accommodates both consecutive and separate date selections with varying start and end times.
+    * The date information should be stored in an array of objects. Each object in the array should contain the date, start time and end time.
+    * A field should be included to indicate the date selection type (consecutive or seperate).
+    * The total cost of the event should be stored.
+
+**5. Functionality:**
+
+* The total cost of the event should be calculated and displayed to the user.
+* The number of days selected should be calculated and stored.
+
+These requirements ensure a comprehensive and user-friendly event creation process that handles diverse date and time scheduling needs.
+
+
+Payment Processing:
+
+Is there a specific payment gateway or provider integration required?
+What is the payment flow for event creation? Is there a fixed fee or variable pricing model?
+How are refunds handled if an event is canceled or modified?
+
+
+User Permissions:
+
+What validation is needed to ensure only authorized users can create events?
+Are there any role-based permissions for event creation?
+
+
+Field Validation:
+
+Are there specific formatting requirements for fields like address, description, etc.?
+What HTML tags are permitted in the description field?
+
+
+Location Services:
+
+How is the event location captured? Is there a map integration or address lookup?
+Is geolocation required for events?
+
+
+Backend Integration:
+
+What specific API endpoints will be needed for event creation and management?
+What is the expected data structure for the request/response?
+
+
+Error Handling:
+
+How should errors from the backend be presented to users?
+Are there specific recovery flows if event creation fails?
+
+
+Drafts and Publishing:
+
+Is there a draft mode for events before they're published?
+Can events be scheduled for future publishing?
+
+
+Testing Requirements:
+
+Are there specific test cases or scenarios that need to be addressed?
+What are the expected performance benchmarks?
