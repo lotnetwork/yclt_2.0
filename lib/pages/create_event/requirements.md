@@ -756,19 +756,122 @@ While the document mentions reusing the existing payment screen, more specifics 
 There's mention of MongoDB and Firebase for data storage, but concrete details about API endpoints for event creation (vs. the existing endpoints for event retrieval) would be useful for implementation.
 The API calls in api_calls.dart are client-side interfaces that communicate with your backend server endpoints. When these calls are made:
 
-CreateEventApiCall:
+## Event Creation: Process Flow
 
-Sends a POST request to '/createevent' with event data
-The backend endpoint receives this data and creates a new document in the events collection in MongoDB
+### 1. Entry Point
+- User navigates to Profile screen
+- User taps "Create Yard Closet Event" button
+- System navigates to Create Event Screen
 
+### 2. Event Creation
+- User completes required fields:
+  - Uploads gallery images (up to 6)
+  - Enters event title
+  - Selects event category from multi-select dropdown
+  - Enters event description
+  - Selects event duration (1-day: $11, 2-days: $19, 3-days: $28)
+  - System auto-populates rate based on duration
+  - User configures schedule (up to 3 date/time combinations)
+    - Selects consecutive or separate dates
+    - Selects start/end date(s)
+    - Enters start/end time for each date
+  - Enters venue address using MapBox address autocomplete
+  - Latitude/longitude fields remain read-only (populated later)
 
-UpdateEventApiCall:
+### 3. Save Options
+- User decides whether to continue or save for later:
+  - Option A: Continue to publishing
+  - Option B: Save as Draft
+    - System saves all entered data with "Draft" status
+    - User receives confirmation
+    - Process pauses here (continues when user resumes from Drafts screen)
 
-Sends a POST request to '/updateevent' with updated event data
-The backend identifies the document by eventId and updates the corresponding fields
+### 4. Validation Before Publishing
+- System validates all required fields
+- Validates data formatting:
+  - Dates in valid formats
+  - Start times must precede end times
+  - No overlapping schedules
+- Ensures user agrees to terms of service
+- If validation fails:
+  - System displays inline error messages
+  - User corrects issues
+  - Validation repeats until successful
 
+### 5. Publishing Options
+- User selects publishing preference:
+  - Option A: Publish Now
+    - Event will be published immediately after payment
+  - Option B: Schedule Publish
+    - User selects future date/time for publishing
+    - System validates scheduled time is in the future
 
-DeleteEventApiCall:
+### 6. Payment Process
+- System navigates to existing Payment Method screen
+- Passes event details (name, rate)
+- User selects payment method (Stripe, RazorPay, or PayPal)
+- User completes payment transaction
+- Payment processing outcomes:
+  - Success: Process continues
+  - Failure: User returned to payment screen with option to retry or cancel
 
-Sends a POST request to '/deleteevent' with the eventId
-The backend uses this ID to find and remove the document from MongoDB
+### 7. Post-Payment Processing
+- On successful payment:
+  - System saves event data to MongoDB via CreateEventApiCall
+  - For "Publish Now" option:
+    - Sets status="Published" and is_completed="Upcoming"
+  - For "Schedule Publish" option:
+    - Sets status="Scheduled" and is_completed="On Hold"
+  - System populates latitude/longitude using MapBox geocoding
+  - System notifies user of successful event creation
+  - For "Publish Now": System sends out notifications immediately
+  - For "Schedule Publish": System schedules notifications for later
+
+### 8. Redirect and Confirmation
+- System redirects user to main app screen
+- Displays success message with confirmation details
+- For scheduled events, includes confirmation of scheduled publishing date/time
+
+### 9. Scheduled Publishing (if applicable)
+- At scheduled time:
+  - Background process changes status from "Scheduled" to "Published"
+  - Changes is_completed from "On Hold" to "Upcoming"
+  - System sends out notifications about the newly published event
+
+### 10. Event Management (Post-Creation)
+- User can access created events from profile or events listing
+- Options for published/scheduled events:
+  - View event details
+  - Edit event (if not yet started)
+  - Delete event (with $5 refund fee)
+  - For events starting within 24 hours, $4 cancellation fee applies
+
+This flow covers the entire process from initial creation through publishing, including all decision points and alternative paths. The requirements appear to be comprehensive, addressing validation, payment processing, status management, and post-creation options. 
+
+The additional requirements cover:
+
+1. **Drafts Management UI**:
+   - A specific location for accessing drafts (within "My Profile" or "My Content")
+   - A well-defined card-based visual layout with specific content elements
+   - Clear sorting options (Last Edited Date by default)
+   - Pagination for better performance
+   - Explicit action buttons and deletion confirmation flow
+   - Batch action capabilities with checkboxes
+
+2. **Event Management UI**:
+   - A dedicated "My Events" tab separate from drafts
+   - Logical grouping by status with clear section headers
+   - Chronological sorting within status groups
+   - Comprehensive card layout with all necessary event details
+   - Well-defined action buttons both in list and detailed views
+   - A suggestion for a "duplicate event" quick action
+
+3. **Visual Status Indicators**:
+   - Specific color coding for different statuses
+   - Icon recommendations for each status
+   - Guidelines for status transition animations
+
+4. **Navigation Flow**:
+   - Clear replacement pattern for editing and detailed views
+   - Explicit navigation back to event lists
+   - Suggestion for breadcrumb navigation in complex flows
