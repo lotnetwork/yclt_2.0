@@ -14,6 +14,51 @@ Basic Create Event screen with navigation
 Event data models
 State management structure
 
+## Create Event Feature File Structure
+
+```
+lib/
+├── pages/
+│   ├── create_event/
+│   │   ├── models/
+│   │   │   └── create_event_model.dart          # Event data model
+│   │   ├── services/
+│   │   │   └── event_api_service.dart           # API service for event operations
+│   │   ├── routes/
+│   │   │   └── app_routes.dart                  # Route definitions
+│   │   └── create_event_page.dart               # Main create event screen
+│   └── profile_componant/
+│       └── profile_componant_widget.dart        # Updated to add Create Event button
+```
+
+### File Purposes:
+
+1. **create_event_model.dart**: 
+   - Defines the data structure for the event being created
+   - Contains form validation logic
+   - Provides conversion between form data and API data structure
+
+2. **event_api_service.dart**:
+   - Handles API calls for event operations
+   - Includes methods for creating events, saving drafts, and retrieving categories
+   - Implements geocoding functionality
+
+3. **app_routes.dart**:
+   - Defines routes for the Create Event feature
+   - Provides navigation methods
+
+4. **create_event_page.dart**:
+   - Implements the main UI for event creation
+   - Handles form input and validation
+   - Manages publishing options and scheduling
+   - Connects to payment flow
+
+5. **profile_componant_widget.dart** (Update):
+   - Adds entry point to Create Event feature from user profile
+   - Includes button for "Create Yard Closet Event"
+
+This structure follows a clean separation of concerns, with models, services, and UI components clearly separated. The navigation is encapsulated in the routes file, making it easy to modify or extend in the future.
+
 
 //lib/pages/create_event/models/create_event_model.dart
 import 'package:flutter/material.dart';
